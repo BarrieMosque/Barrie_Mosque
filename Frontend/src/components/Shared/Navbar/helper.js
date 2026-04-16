@@ -55,6 +55,7 @@ export const communityItems = [
 export const servicesItems = [
     { title: 'Marriage', subTitle: "See all available slots for Barrie Mosque & process your booking online", ref: "/marriage" },
     { title: 'Funeral ', subTitle: "Helping you during this difficult time", ref: "/funeral" },
+    { title: 'Umrah Services', subTitle: "Umrah Packages 2026 from Canada", ref: "/umrah-services" },
     { title: 'Islamic Counseling', subTitle: "Helping You Navigate Life's Challenges with Faith and Guidance", ref: "/islamic-counseling" },
     { title: 'Reverts to Islam', subTitle: "Support and Guidance for New Muslims on Their Journey to Islam", ref: "/reverts-to-islam" },
 ];
