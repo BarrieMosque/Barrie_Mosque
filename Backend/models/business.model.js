@@ -5,6 +5,16 @@ const BusinessSchema = new mongoose.Schema({
         type: String,
         required: false,
     },
+    ownerFullName: {
+        type: String,
+        required: false,
+    },
+    masjidConnection: {
+        type: String,
+        required: false,
+        enum: ['Attendee', 'Sponsor', 'Volunteer', 'No connection'],
+        default: 'No connection',
+    },
     details: {
         type: String,
         required: false,

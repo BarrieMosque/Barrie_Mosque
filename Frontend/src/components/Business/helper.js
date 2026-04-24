@@ -3,6 +3,7 @@ import { string } from "yup";
 
 export const YupBusinessSchema = {
     name: string().required(),
+    ownerFullName: string().required("Owner full name is required"),
     email: string().email().required(),
     phone: string()
         .required("Phone number is required")
@@ -12,7 +13,9 @@ export const YupBusinessSchema = {
         ),
     details: string().optional(),
     website: string().url("Website must be a valid URL").optional(),
-    category: string().required("Category is required")
+    category: string().required("Category is required"),
+    // Optional; when checkbox is checked we enforce selection in submit handler
+    masjidConnection: string().oneOf(['Attendee', 'Sponsor', 'Volunteer']).optional(),
 }
 
 export const formBusinessSchema = (businessSchema) => {
@@ -22,10 +25,12 @@ export const formBusinessSchema = (businessSchema) => {
         defaultValues: {
             email: '',
             name: '',
+            ownerFullName: '',
             details: '',
             phone: '',
             website: '',
-            category: ''
+            category: '',
+            masjidConnection: '',
         }
     }
 }

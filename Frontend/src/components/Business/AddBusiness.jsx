@@ -8,9 +8,10 @@ import { YupBusinessSchema, formBusinessSchema } from './helper';
 import Button4 from '../Shared/Buttons/Button4';
 import axios from 'axios';
 import toast from 'react-hot-toast';
-import { FormControl, InputLabel, MenuItem, Select, FormHelperText } from '@mui/material';
+import { FormControl, InputLabel, MenuItem, Select, FormHelperText, Checkbox, FormControlLabel } from '@mui/material';
 import { Controller } from 'react-hook-form';
 import apiInterceptor from '@/lib/api';
+import { useState } from 'react';
 
 const categoryOptions = [
     { label: "Agriculture & Farming", value: "Agriculture & Farming" },
@@ -46,12 +47,23 @@ const categoryOptions = [
 const AddBusiness = ({ text, setBusinesses }) => {
     let businessSchema = object(YupBusinessSchema);
     const { control, handleSubmit, reset, formState: { errors, isValid } } = useForm(formBusinessSchema(businessSchema))
+    const [hasMasjidConnection, setHasMasjidConnection] = useState(false);
 
     const handleBusinessSubmit = async (payload) => {
+        if (hasMasjidConnection && !payload?.masjidConnection) {
+            toast.error('Please select your connection type.');
+            return;
+        }
+        const finalPayload = {
+            ...payload,
+        };
+        if (!hasMasjidConnection) {
+            delete finalPayload.masjidConnection;
+        }
         console.log("payload", payload)
         try {
             await toast.promise(
-                apiInterceptor.post(`/add-business`, payload),
+                apiInterceptor.post(`/add-business`, finalPayload),
                 {
                     loading: 'Submitting business request...',
                     success: 'Your business request has been sent to super admin. Your business will be listed after approval.',
@@ -64,13 +76,26 @@ const AddBusiness = ({ text, setBusinesses }) => {
 
             });
             reset();
+            setHasMasjidConnection(false);
         } catch (err) {
             console.error("Error submitting business request:", err);
         }
     };
     return (
         <Grid px={2} container className={styles.infoBox} justifyContent={'center'} >
-            <Grid className={styles.formContainer} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-start'} container spacing={2} px={2} md={6} xs={12}>
+            <Grid
+                className={`${styles.formContainer} ${styles.formContainerAutoHeight}`}
+                display={'flex'}
+                flexDirection={'column'}
+                alignItems={'flex-start'}
+                justifyContent={'flex-start'}
+                container
+                spacing={2}
+                px={2}
+                md={6}
+                xs={12}
+                sx={{ height: 'auto', minHeight: 0 }}
+            >
                 <br />
                 <Card elevation={3} className={styles.contactCard}>
                     <Grid textAlign={'center'}>
@@ -164,6 +189,55 @@ const AddBusiness = ({ text, setBusinesses }) => {
                                     rows={5}
                                 />
                             </Grid>
+                            <Grid item xs={12} md={6}>
+                                <InputField
+                                    control={control}
+                                    errors={errors}
+                                    name={"ownerFullName"}
+                                    placeHolder={"Enter Owner Full Name"}
+                                    label={"Owner Full Name"}
+                                    type={"text"}
+                                    errorName={errors?.ownerFullName}
+                                />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControlLabel
+                                    control={
+                                        <Checkbox
+                                            checked={hasMasjidConnection}
+                                            onChange={(e) => setHasMasjidConnection(e.target.checked)}
+                                            sx={{ color: '#042A29', '&.Mui-checked': { color: '#042A29' } }}
+                                        />
+                                    }
+                                    label="Do you have a connection to the Masjid?"
+                                />
+                            </Grid>
+                            {hasMasjidConnection && (
+                                <Grid item xs={12}>
+                                    <Controller
+                                        name="masjidConnection"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <FormControl fullWidth error={!!errors.masjidConnection}>
+                                                <InputLabel id="masjid-connection-label">Connection Type</InputLabel>
+                                                <Select
+                                                    labelId="masjid-connection-label"
+                                                    label="Connection Type"
+                                                    size="small"
+                                                    {...field}
+                                                >
+                                                    <MenuItem value="Attendee">Attendee</MenuItem>
+                                                    <MenuItem value="Sponsor">Sponsor</MenuItem>
+                                                    <MenuItem value="Volunteer">Volunteer</MenuItem>
+                                                </Select>
+                                                {errors.masjidConnection && (
+                                                    <FormHelperText>{errors.masjidConnection.message}</FormHelperText>
+                                                )}
+                                            </FormControl>
+                                        )}
+                                    />
+                                </Grid>
+                            )}
                             <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                                 <Grid item xs={4}>
                                     <Button4 type={"submit"} disabled={!isValid}>Send</Button4>

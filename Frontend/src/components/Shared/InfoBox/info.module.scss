@@ -80,6 +80,10 @@
         padding-top: 10px;
     }
 
+    .formContainerAutoHeight {
+        height: auto !important;
+    }
+
     @media (max-width: 600px) {
         flex-direction: column;
 

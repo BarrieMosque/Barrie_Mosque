@@ -13,9 +13,11 @@ export const createBusinessService = async (data) => {
     }
 };
 
-export const getBusinessesService = async (obj = {}) => {
+export const getBusinessesService = async (obj = {}, projection = undefined) => {
     try {
-        const businesses = await businessModel.find(obj).sort({ createdAt: -1 });
+        const query = businessModel.find(obj).sort({ createdAt: -1 });
+        if (projection) query.select(projection);
+        const businesses = await query;
         return businesses;
     } catch (error) {
         console.log("error message : ", error)
