@@ -43,7 +43,11 @@ export const createBusiness = async (req, res) => {
 
 export const getBusinesses = async (req, res) => {
     try {
-        const businesses = await getBusinessesService({ state: true });
+        // Public endpoint: do not publish verification fields
+        const businesses = await getBusinessesService(
+            { state: true },
+            '-ownerFullName -masjidConnection'
+        );
         if (businesses?.length) {
             res.json({ status: 200, message: "Business Fetched Successfully", data: businesses });
         }

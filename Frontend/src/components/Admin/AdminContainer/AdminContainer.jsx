@@ -62,6 +62,8 @@ const AdminContainer = () => {
 
   const dirColumns = [
     { field: 'name', headerName: 'Business Name',minWidth: 200, flex: 1 },
+    { field: 'ownerFullName', headerName: 'Owner Full Name', minWidth: 200, flex: 1 },
+    { field: 'masjidConnection', headerName: 'Masjid Connection', minWidth: 200, flex: 1 },
     { field: 'phone', headerName: 'Phone Number', minWidth: 200,flex: 1 },
     { field: 'email', headerName: 'Business Email',minWidth: 200, flex: 1 },
     {

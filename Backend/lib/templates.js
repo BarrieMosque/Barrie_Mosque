@@ -532,6 +532,8 @@ export const getBusinessApprovalTemplate = (data) => {
         <table style="width: 100%; border-collapse: collapse;">
             <tbody>
                 <tr><td><strong>Name:</strong></td><td>${data.name || '-'}</td></tr>
+                <tr><td><strong>Owner Full Name:</strong></td><td>${data.ownerFullName || '-'}</td></tr>
+                <tr><td><strong>Connection to Masjid:</strong></td><td>${data.masjidConnection || 'No connection'}</td></tr>
                 <tr><td><strong>Details:</strong></td><td>${data.details || '-'}</td></tr>
                 <tr><td><strong>Phone:</strong></td><td>${data.phone || '-'}</td></tr>
                 <tr><td><strong>Email:</strong></td><td>${data.email || '-'}</td></tr>
