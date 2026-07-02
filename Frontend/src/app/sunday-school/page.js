@@ -15,9 +15,10 @@ import { MAILS } from '@/components/Shared/enums';
 import apiInterceptor from '@/lib/api';
 const SundaySchool = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "sunday_school_registration",
       mailTo: MAILS.school
     });

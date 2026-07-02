@@ -12,9 +12,10 @@ import apiInterceptor from '@/lib/api';
 import toast from 'react-hot-toast';
 const ContactUs = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "suggest_event",
       mailTo: MAILS.secretary
     });

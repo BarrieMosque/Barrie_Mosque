@@ -17,9 +17,10 @@ import apiInterceptor from '@/lib/api';
 const Volunteer = () => {
 
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "volunteer",
       mailTo: MAILS.secretary
     });

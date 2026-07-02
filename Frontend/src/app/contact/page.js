@@ -12,9 +12,10 @@ import "@fontsource/quicksand";
 import toast from 'react-hot-toast';
 const ContactUs = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "contact_us",
       mailTo: MAILS.secretary
     });

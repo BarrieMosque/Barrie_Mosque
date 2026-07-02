@@ -3,6 +3,8 @@ import { Card, Grid } from '@mui/material';
 import { useForm } from 'react-hook-form';
 import { object } from 'yup';
 import InputField from '../Shared/Forms/InputField';
+import RecaptchaField from '../Shared/Forms/RecaptchaField';
+import { useRecaptcha } from '../Shared/Forms/useRecaptcha';
 import styles from '../Shared/InfoBox/info.module.scss';
 import { YupBusinessSchema, formBusinessSchema } from './helper';
 import Button4 from '../Shared/Buttons/Button4';
@@ -44,14 +46,18 @@ const categoryOptions = [
 
 
 const AddBusiness = ({ text, setBusinesses }) => {
+    const { recaptchaRef, captchaToken, setCaptchaToken, resetCaptcha, handleCaptchaExpired, isCaptchaVerified, isCaptchaEnabled } = useRecaptcha();
     let businessSchema = object(YupBusinessSchema);
     const { control, handleSubmit, reset, formState: { errors, isValid } } = useForm(formBusinessSchema(businessSchema))
 
     const handleBusinessSubmit = async (payload) => {
-        console.log("payload", payload)
+        if (isCaptchaEnabled && !captchaToken) {
+            return;
+        }
+
         try {
             await toast.promise(
-                apiInterceptor.post(`/add-business`, payload),
+                apiInterceptor.post(`/add-business`, { ...payload, captchaToken }),
                 {
                     loading: 'Submitting business request...',
                     success: 'Your business request has been sent to super admin. Your business will be listed after approval.',
@@ -60,14 +66,16 @@ const AddBusiness = ({ text, setBusinesses }) => {
                         return err.response?.data?.error || 'Failed to submit business request. Please try again.';
                     }
                 }
-            ).then(resp => {
-
-            });
+            );
             reset();
+            resetCaptcha();
         } catch (err) {
             console.error("Error submitting business request:", err);
         }
     };
+
+    const isSubmitDisabled = !isValid || (isCaptchaEnabled && !isCaptchaVerified);
+
     return (
         <Grid px={2} container className={styles.infoBox} justifyContent={'center'} >
             <Grid className={styles.formContainer} display={'flex'} flexDirection={'column'} alignItems={'flex-start'} justifyContent={'flex-start'} container spacing={2} px={2} md={6} xs={12}>
@@ -164,9 +172,14 @@ const AddBusiness = ({ text, setBusinesses }) => {
                                     rows={5}
                                 />
                             </Grid>
+                            <RecaptchaField
+                                recaptchaRef={recaptchaRef}
+                                onChange={setCaptchaToken}
+                                onExpired={handleCaptchaExpired}
+                            />
                             <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                                 <Grid item xs={4}>
-                                    <Button4 type={"submit"} disabled={!isValid}>Send</Button4>
+                                    <Button4 type={"submit"} disabled={isSubmitDisabled}>Send</Button4>
                                 </Grid>
                             </Grid>
                         </Grid>

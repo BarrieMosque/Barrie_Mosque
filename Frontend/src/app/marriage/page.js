@@ -13,9 +13,10 @@ import apiInterceptor from '@/lib/api';
 import toast from 'react-hot-toast';
 const Marriage = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "marriage",
       mailTo: MAILS.imam
     });

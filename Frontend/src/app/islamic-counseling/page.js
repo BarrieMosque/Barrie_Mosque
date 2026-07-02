@@ -14,9 +14,10 @@ import toast from 'react-hot-toast';
 
 const AboutIslam = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "islamic_counseling",
       mailTo: MAILS.imam
     });

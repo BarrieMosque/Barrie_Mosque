@@ -1,6 +1,8 @@
 "use client"
 import Button4 from '@/components/Shared/Buttons/Button4';
 import CustomTextField from '@/components/Shared/Forms/CustomTextField';
+import RecaptchaField from '@/components/Shared/Forms/RecaptchaField';
+import { useRecaptcha } from '@/components/Shared/Forms/useRecaptcha';
 import RHFCheckBox from '@/components/Shared/Forms/RHFCheckBox';
 import RHFSelect from '@/components/Shared/Forms/RHFSelect';
 import { Card, Grid, Typography } from '@mui/material';
@@ -17,6 +19,7 @@ import { MAILS } from '../Shared/enums';
 import apiInterceptor from '@/lib/api';
 
 const ArabicSchoolForm = ({ text }) => {
+  const { recaptchaRef, captchaToken, setCaptchaToken, resetCaptcha, handleCaptchaExpired, isCaptchaVerified, isCaptchaEnabled } = useRecaptcha();
   let arabicSchoolSchema = object(YupArabicSchoolSchema);
   const { control, handleSubmit, formState: { errors } } = useForm(formArabicSchoolSchema(arabicSchoolSchema));
 
@@ -53,10 +56,13 @@ const ArabicSchoolForm = ({ text }) => {
   }, [noOfChildren, append, remove, fields.length]);
 
   const handleArabicSchoolSubmit = async (payload) => {
-    console.log("payload", payload);
+    if (isCaptchaEnabled && !captchaToken) {
+      return;
+    }
 
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "arabic_school_registration",
       mailTo: MAILS.arabicSchool
     });
@@ -71,9 +77,10 @@ const ArabicSchoolForm = ({ text }) => {
     );
 
     await sendEmailPromise;
+    resetCaptcha();
   };
 
-  console.log("error", errors)
+  const isSubmitDisabled = isCaptchaEnabled && !isCaptchaVerified;
 
   return (
     <Grid px={2} container justifyContent={'center'} spacing={2}>
@@ -155,10 +162,16 @@ const ArabicSchoolForm = ({ text }) => {
 
               ))}
 
+              <RecaptchaField
+                recaptchaRef={recaptchaRef}
+                onChange={setCaptchaToken}
+                onExpired={handleCaptchaExpired}
+              />
+
               {/* Submit Button */}
               <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                 <Grid item xs={4}>
-                  <Button4 type="submit">Send</Button4>
+                  <Button4 type="submit" disabled={isSubmitDisabled}>Send</Button4>
                 </Grid>
               </Grid>
             </Grid>

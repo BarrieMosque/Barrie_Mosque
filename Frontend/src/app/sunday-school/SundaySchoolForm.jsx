@@ -6,11 +6,14 @@ import styles from '../../components/Shared/InfoBox/info.module.scss';
 import { YupSundaySchoolSchema, formSundaySchoolSchema, studentAgeOptions, noOfChildrenOptions, genderOptions } from './helper';
 import Button4 from '@/components/Shared/Buttons/Button4';
 import CustomTextField from '@/components/Shared/Forms/CustomTextField';
+import RecaptchaField from '@/components/Shared/Forms/RecaptchaField';
+import { useRecaptcha } from '@/components/Shared/Forms/useRecaptcha';
 import RHFSelect from '@/components/Shared/Forms/RHFSelect';
 import RHFCheckBox from '@/components/Shared/Forms/RHFCheckBox';
 import { useEffect } from 'react';
 
 const SundaySchoolForm = ({ text, formSubmit }) => {
+    const { recaptchaRef, captchaToken, setCaptchaToken, resetCaptcha, handleCaptchaExpired, isCaptchaVerified, isCaptchaEnabled } = useRecaptcha();
     let sundaySchoolSchema = object(YupSundaySchoolSchema);
     const { control, handleSubmit, formState: { errors } } = useForm(formSundaySchoolSchema(sundaySchoolSchema));
 
@@ -48,9 +51,15 @@ const SundaySchoolForm = ({ text, formSubmit }) => {
     }, [noOfChildren, append, remove, fields.length]);
 
     const handleSundaySchoolSubmit = (payload) => {
-        console.log("payload in form", payload);
-        formSubmit(payload)
+        if (isCaptchaEnabled && !captchaToken) {
+            return;
+        }
+
+        formSubmit({ ...payload, captchaToken });
+        resetCaptcha();
     };
+
+    const isSubmitDisabled = isCaptchaEnabled && !isCaptchaVerified;
 
 
     return (
@@ -196,10 +205,16 @@ const SundaySchoolForm = ({ text, formSubmit }) => {
 
 
 
+                            <RecaptchaField
+                                recaptchaRef={recaptchaRef}
+                                onChange={setCaptchaToken}
+                                onExpired={handleCaptchaExpired}
+                            />
+
                             {/* Submit Button */}
                             <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                                 <Grid item xs={4}>
-                                    <Button4 type="submit">Send</Button4>
+                                    <Button4 type="submit" disabled={isSubmitDisabled}>Send</Button4>
                                 </Grid>
                             </Grid>
                         </Grid>

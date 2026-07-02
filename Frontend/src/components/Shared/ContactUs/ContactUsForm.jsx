@@ -4,17 +4,27 @@ import { useForm } from 'react-hook-form';
 import { object } from 'yup';
 import Button4 from '../Buttons/Button4';
 import InputField from '../Forms/InputField';
+import RecaptchaField from '../Forms/RecaptchaField';
+import { useRecaptcha } from '../Forms/useRecaptcha';
 import styles from '../InfoBox/info.module.scss';
 import { YupContactSchema, formContactSchema } from './helper';
 
 const ContactUsForm = ({ text, submitForm }) => {
+    const { recaptchaRef, captchaToken, setCaptchaToken, resetCaptcha, handleCaptchaExpired, isCaptchaVerified, isCaptchaEnabled } = useRecaptcha();
     let contactUsSchema = object(YupContactSchema);
     const { control, handleSubmit, formState: { errors, isValid } } = useForm(formContactSchema(contactUsSchema))
 
     const handleLoginSubmit = (payload) => {
-        console.log("payload", payload);
-        submitForm(payload);
+        if (isCaptchaEnabled && !captchaToken) {
+            return;
+        }
+
+        submitForm({ ...payload, captchaToken });
+        resetCaptcha();
     };
+
+    const isSubmitDisabled = !isValid || (isCaptchaEnabled && !isCaptchaVerified);
+
     return (
         <Grid xs={12} px={2} container className={styles.infoBox} justifyContent={'center'} >
 
@@ -74,9 +84,14 @@ const ContactUsForm = ({ text, submitForm }) => {
                                     rows={5}
                                 />
                             </Grid>
+                            <RecaptchaField
+                                recaptchaRef={recaptchaRef}
+                                onChange={setCaptchaToken}
+                                onExpired={handleCaptchaExpired}
+                            />
                             <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                                 <Grid item xs={4}>
-                                    <Button4 type={"submit"} disabled={!isValid}>Send</Button4>
+                                    <Button4 type={"submit"} disabled={isSubmitDisabled}>Send</Button4>
                                 </Grid>
                             </Grid>
                         </Grid>

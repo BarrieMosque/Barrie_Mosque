@@ -16,9 +16,10 @@ import toast from 'react-hot-toast';
 
 const RevertsToIslam = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "reverts_to_islam",
       mailTo: MAILS.revert
     });

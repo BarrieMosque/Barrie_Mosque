@@ -16,9 +16,10 @@ import { MAILS } from '@/components/Shared/enums';
 
 const OurImam = () => {
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "contact_imam",
       mailTo: MAILS.imam
     });

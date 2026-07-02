@@ -17,9 +17,10 @@ const PrincipleAndTeachers = () => {
 
 
 
-  const handleFormSubmit = async (payload) => {
+  const handleFormSubmit = async ({ captchaToken, ...payload }) => {
     const sendEmailPromise = apiInterceptor.post(`/send-email`, {
       data: payload,
+      captchaToken,
       mailType: "teacher_registration",
       mailTo: MAILS.school
     });
