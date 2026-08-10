@@ -13,8 +13,8 @@ import authenticateJWT from './middleware/auth.js';
 const app = express();
 
 // MongoDB connection
-const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.HOST}/barrieMosqueDB`;
-
+const MONGODB_URI = `mongodb+srv://${process.env.MONGO_USERNAME}:${process.env.MONGO_PASSWORD}@${process.env.HOST}/barrieMosque`;
+console.log("db test", MONGODB_URI)
 app.use(cors());
 app.use(express.json());
 
