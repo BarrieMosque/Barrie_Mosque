@@ -53,30 +53,26 @@ const AddBusiness = ({ text, setBusinesses }) => {
     const [hasMasjidConnection, setHasMasjidConnection] = useState(false);
 
     const handleBusinessSubmit = async (payload) => {
-<<<<<<< HEAD
         if (isCaptchaEnabled && !captchaToken) {
             return;
         }
 
-        try {
-            await toast.promise(
-                apiInterceptor.post(`/add-business`, { ...payload, captchaToken }),
-=======
         if (hasMasjidConnection && !payload?.masjidConnection) {
             toast.error('Please select your connection type.');
             return;
         }
+
         const finalPayload = {
             ...payload,
+            captchaToken,
         };
         if (!hasMasjidConnection) {
             delete finalPayload.masjidConnection;
         }
-        console.log("payload", payload)
+
         try {
             await toast.promise(
                 apiInterceptor.post(`/add-business`, finalPayload),
->>>>>>> ac0cd190b7773d9ef3ec43e90d21317f6a675d97
                 {
                     loading: 'Submitting business request...',
                     success: 'Your business request has been sent to super admin. Your business will be listed after approval.',
@@ -87,11 +83,8 @@ const AddBusiness = ({ text, setBusinesses }) => {
                 }
             );
             reset();
-<<<<<<< HEAD
             resetCaptcha();
-=======
             setHasMasjidConnection(false);
->>>>>>> ac0cd190b7773d9ef3ec43e90d21317f6a675d97
         } catch (err) {
             console.error("Error submitting business request:", err);
         }
@@ -207,13 +200,6 @@ const AddBusiness = ({ text, setBusinesses }) => {
                                     rows={5}
                                 />
                             </Grid>
-<<<<<<< HEAD
-                            <RecaptchaField
-                                recaptchaRef={recaptchaRef}
-                                onChange={setCaptchaToken}
-                                onExpired={handleCaptchaExpired}
-                            />
-=======
                             <Grid item xs={12} md={6}>
                                 <InputField
                                     control={control}
@@ -263,7 +249,11 @@ const AddBusiness = ({ text, setBusinesses }) => {
                                     />
                                 </Grid>
                             )}
->>>>>>> ac0cd190b7773d9ef3ec43e90d21317f6a675d97
+                            <RecaptchaField
+                                recaptchaRef={recaptchaRef}
+                                onChange={setCaptchaToken}
+                                onExpired={handleCaptchaExpired}
+                            />
                             <Grid item xs={12} display={'flex'} justifyContent={'flex-end'}>
                                 <Grid item xs={4}>
                                     <Button4 type={"submit"} disabled={isSubmitDisabled}>Send</Button4>
