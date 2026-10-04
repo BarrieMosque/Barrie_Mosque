@@ -39,7 +39,7 @@ export const communityItems = [
         subMenu: [
             { title: 'Principle & Teachers', subTitle: "Meet the dedicated staff guiding our students", ref: "/principle-and-teachers" },
             { title: 'Become a Teacher', subTitle: `"The most superior among you are those who learn the Qur'an and teach it." (Bukhari, 1971, Vol. 6, p. 502)"`, ref: "/become-a-teacher" },
-            { title: 'BISS - Yearly Schedule Calendar (2025 & 2026)', subTitle: "View the yearly schedule calendar for BISS", ref: "/documents/BISS-Yearly-Schedule-Calendar-2025-2026.pdf", isExternal: true },
+            { title: 'BISS - Yearly Schedule Calendar (2026 & 2027)', subTitle: "View the yearly schedule calendar for BISS", ref: "/documents/Yearly-Schedule-for-BISS.pdf", isExternal: true },
         ]
     },
     {
